@@ -15,6 +15,6 @@ app.use(bodyPaser.json());
 
 app.use("/api/users", router)
 app.listen(PORT, async () => {
-    console.log(`Server is Started at ${PORT}`.bgBlue);
+    console.log(`Server is Started at PORT ${PORT}`.bgBlue);
     await db()
 });
