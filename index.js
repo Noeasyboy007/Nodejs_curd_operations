@@ -2,13 +2,14 @@ const express = require("express");
 const bodyPaser = require("body-parser");
 const dotenv = require("dotenv");
 const colors = require("colors");
+const cors = require('cors');
+
 
 const db = require("./config/db");
 const router = require("./routes/userRoute")
 
 const app = express();
 
-const cors = require('cors');
 app.use(cors());
 
 
