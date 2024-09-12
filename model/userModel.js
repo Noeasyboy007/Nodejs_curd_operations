@@ -10,13 +10,19 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    adress: {
+    address: {
         type: String,
         required: true
     },
+    gender: {
+        type: String,
+        required: true,
+        enum: ["male", "female"],
+    },
     avatar: {
-        type: String // To store avatar URL
-    }
+        type: String,
+        default: "",
+    },
 },{timestamps: true});
 
 const User = mongoose.model('User', userSchema);

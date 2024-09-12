@@ -9,32 +9,45 @@ const test = async (req, res) => {
 }
 
 const create = async (req, res) => {
-    const create = async (req, res) => {
-        try {
-            const userData = new User(req.body);
-            const { email, name } = userData;
+    try {
+        const { email, name, address, gender } = req.body;
 
-            const userExists = await User.findOne({ email });
-            if (userExists) {
-                return res.status(400).json({ error: "User already exists with this email" });
-            }
-
-            const avatar =
-                name.toLowerCase().endsWith('a') ?
-                    `https://avatar.iran.liara.run/public/girl?username=${name}` :
-                    `https://avatar.iran.liara.run/public/boy?username=${name}`;
-
-            userData.avatar = avatar;
-
-            const savedUser = await userData.save();
-            res.status(200).json({ message: savedUser });
-            console.log("User saved");
-        } catch (error) {
-            res.status(500).json({ error: "Internal Server error" });
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.status(400).json({ error: "User already exists with this email" });
         }
-    }
 
-}
+        const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${name}`;
+        const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${name}`;
+
+        const avatar = gender === "male" ? boyProfilePic : girlProfilePic;
+
+        const newUser = new User({
+            name,
+            email,
+            address, // Correct field spelling
+            gender,
+            avatar,
+        });
+
+        await newUser.save();
+        console.log("Data saved SucessFully");
+
+
+        return res.status(201).json({
+            _id: newUser._id,
+            name: newUser.name,
+            email: newUser.email,
+            gender: newUser.gender,
+            avatar: newUser.avatar,
+        });
+
+    } catch (error) {
+        console.error(error); // Log the error to see more details
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
 
 const read = async (req, res) => {
     try {
@@ -51,34 +64,20 @@ const read = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    const update = async (req, res) => {
-        try {
-            const id = req.params.id;
-            const userExists = await User.findOne({ _id: id });
+    try {
+        const id = req.params.id;
 
-            if (!userExists) {
-                return res.status(404).json({ error: "User not found" });
-            }
-
-            const updatedUserData = req.body;
-            const { name } = updatedUserData;
-
-            // Update avatar if name changes
-            if (name) {
-                updatedUserData.avatar =
-                    name.toLowerCase().endsWith('a') ?
-                        `https://avatar.iran.liara.run/public/girl?username=${name}` :
-                        `https://avatar.iran.liara.run/public/boy?username=${name}`;
-            }
-
-            const updatedUser = await User.findByIdAndUpdate(id, updatedUserData, { new: true });
-            res.status(200).json({ message: updatedUser });
-            console.log("User updated");
-        } catch (error) {
-            res.status(500).json({ error: "Internal Server error" });
+        const userExists = await User.findOne({ _id: id });
+        if (!userExists) {
+            return res.status(404).json({ error: "User not found" });
         }
-    }
 
+        const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
+        res.status(200).json({ message: updatedUser });
+        console.log("User updated");
+    } catch (error) {
+        res.status(500).json({ error: "Internal Server error" });
+    }
 }
 
 const deleteUser = async (req, res) => {
