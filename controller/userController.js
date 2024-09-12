@@ -71,6 +71,7 @@ const deleteUser = async (req, res) => {
 
     } catch (error) {
         res.ststus(500).json({ error: "Internal Server error" });
+        console.log(error);
     }
 }
 
