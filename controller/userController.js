@@ -25,7 +25,7 @@ const create = async (req, res) => {
         const newUser = new User({
             name,
             email,
-            address, // Correct field spelling
+            address, 
             gender,
             avatar,
         });
@@ -93,7 +93,7 @@ const deleteUser = async (req, res) => {
         console.log("User deleted successfully");
 
     } catch (error) {
-        res.ststus(500).json({ error: "Internal Server error" });
+        res.status(500).json({ error: "Internal Server error" });
         console.log(error);
     }
 }
